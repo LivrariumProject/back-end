@@ -4,7 +4,9 @@
 
 Se preferir criar as requisições do zero, siga este guia:
 
-### 🎯 TESTANDO LIVROS
+---
+
+# 📚 TESTANDO LIVROS
 
 ---
 
@@ -523,15 +525,21 @@ http://localhost:3000/books/search?author=Tolkien&available=true
 
 ---
 
-## 👤 TESTANDO USUÁRIOS
+# 👤 TESTANDO USUÁRIOS
 
-As rotas de usuários funcionam de forma similar:
+---
 
-### Criar Usuário (POST)
-```http
-POST http://localhost:3000/users
-Content-Type: application/json
+### 1️⃣ CRIAR UM USUÁRIO (POST)
 
+**Configuração:**
+- **Método:** `POST`
+- **URL:** `http://localhost:3000/users`
+- **Headers:**
+  - Key: `Content-Type`
+  - Value: `application/json`
+
+**Body (raw JSON):**
+```json
 {
   "name": "João Silva",
   "email": "joao@email.com",
@@ -539,37 +547,377 @@ Content-Type: application/json
 }
 ```
 
-### Listar Usuários (GET)
-```http
-GET http://localhost:3000/users
+**Resposta Esperada (201 Created):**
+```json
+{
+  "success": true,
+  "message": "Usuário criado com sucesso",
+  "data": {
+    "id": 1,
+    "name": "João Silva",
+    "email": "joao@email.com"
+  }
+}
 ```
 
-### Buscar Usuário por ID (GET)
-```http
-GET http://localhost:3000/users/1
+> ⚠️ **Nota:** A senha NÃO é retornada na resposta por questões de segurança.
+
+**Se email duplicado (409 Conflict):**
+```json
+{
+  "success": false,
+  "message": "Já existe um usuário com o email joao@email.com",
+  "statusCode": 409
+}
 ```
 
-### Atualizar Usuário (PUT)
-```http
-PUT http://localhost:3000/users/1
-Content-Type: application/json
+**Se dados inválidos (400 Bad Request):**
+```json
+{
+  "success": false,
+  "message": "O email informado não é válido",
+  "statusCode": 400
+}
+```
 
+---
+
+### 2️⃣ LISTAR TODOS OS USUÁRIOS (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/users`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "count": 2,
+  "data": [
+    {
+      "id": 1,
+      "name": "João Silva",
+      "email": "joao@email.com"
+    },
+    {
+      "id": 2,
+      "name": "Maria Santos",
+      "email": "maria@email.com"
+    }
+  ]
+}
+```
+
+---
+
+### 3️⃣ BUSCAR USUÁRIO POR ID (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/users/1`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "João Silva",
+    "email": "joao@email.com"
+  }
+}
+```
+
+**Se não encontrar (404 Not Found):**
+```json
+{
+  "success": false,
+  "message": "Usuário com ID 99 não encontrado",
+  "statusCode": 404
+}
+```
+
+---
+
+### 4️⃣ BUSCAR USUÁRIO POR EMAIL (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/users/email/joao@email.com`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "João Silva",
+    "email": "joao@email.com"
+  }
+}
+```
+
+**Se não encontrar (404 Not Found):**
+```json
+{
+  "success": false,
+  "message": "Usuário não encontrado",
+  "statusCode": 404
+}
+```
+
+---
+
+### 5️⃣ BUSCAR USUÁRIOS POR NOME (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/users/name/João`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "count": 1,
+  "data": [
+    {
+      "id": 1,
+      "name": "João Silva",
+      "email": "joao@email.com"
+    }
+  ]
+}
+```
+
+> 💡 **Dica:** A busca é parcial e não diferencia maiúsculas/minúsculas. Buscar "jo" retornaria "João".
+
+---
+
+### 6️⃣ BUSCAR USUÁRIOS COM FILTROS (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/users/search`
+- **Query Params (opcionais):**
+  - `name` - Filtrar por nome (busca parcial)
+  - `email` - Filtrar por email (busca parcial)
+
+**Exemplos de URL:**
+```
+http://localhost:3000/users/search?name=João
+http://localhost:3000/users/search?email=gmail
+http://localhost:3000/users/search?name=Silva&email=email.com
+```
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "count": 1,
+  "filters": {
+    "name": "João"
+  },
+  "data": [
+    {
+      "id": 1,
+      "name": "João Silva",
+      "email": "joao@email.com"
+    }
+  ]
+}
+```
+
+---
+
+### 7️⃣ OBTER ESTATÍSTICAS DE USUÁRIOS (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/users/stats`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "total": 5
+  }
+}
+```
+
+---
+
+### 8️⃣ ATUALIZAR USUÁRIO (PUT)
+
+**Configuração:**
+- **Método:** `PUT`
+- **URL:** `http://localhost:3000/users/1`
+- **Headers:**
+  - Key: `Content-Type`
+  - Value: `application/json`
+
+**Body (raw JSON) - Atualizar nome:**
+```json
+{
+  "name": "João Silva Atualizado"
+}
+```
+
+**Body (raw JSON) - Atualizar email:**
+```json
+{
+  "email": "joao.novo@email.com"
+}
+```
+
+**Body (raw JSON) - Atualizar senha:**
+```json
+{
+  "password": "novaSenha456"
+}
+```
+
+**Body (raw JSON) - Atualizar múltiplos campos:**
+```json
 {
   "name": "João Silva Atualizado",
   "email": "joao.novo@email.com"
 }
 ```
 
-### Deletar Usuário (DELETE)
-```http
-DELETE http://localhost:3000/users/1
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Usuário atualizado com sucesso",
+  "data": {
+    "id": 1,
+    "name": "João Silva Atualizado",
+    "email": "joao.novo@email.com"
+  }
+}
+```
+
+**Se email duplicado (409 Conflict):**
+```json
+{
+  "success": false,
+  "message": "Já existe um usuário com o email maria@email.com",
+  "statusCode": 409
+}
+```
+
+**Se dados inválidos (400 Bad Request):**
+```json
+{
+  "success": false,
+  "message": "A senha deve ter pelo menos 6 caracteres",
+  "statusCode": 400
+}
 ```
 
 ---
 
-## 🎯 Sequência de Testes Recomendada
+### 9️⃣ DELETAR USUÁRIO (DELETE)
+
+**Configuração:**
+- **Método:** `DELETE`
+- **URL:** `http://localhost:3000/users/1`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Usuário deletado com sucesso",
+  "data": {
+    "id": 1,
+    "name": "João Silva",
+    "email": "joao@email.com"
+  }
+}
+```
+
+**Se não encontrar (404 Not Found):**
+```json
+{
+  "success": false,
+  "message": "Usuário com ID 99 não encontrado",
+  "statusCode": 404
+}
+```
+
+---
+
+## 📋 Resumo de Todas as Rotas de Usuários
+
+| Método   | Rota                  | Descrição                         |
+| -------- | --------------------- | --------------------------------- |
+| `GET`    | `/users`              | Listar todos os usuários          |
+| `GET`    | `/users/search`       | Buscar com filtros (query params) |
+| `GET`    | `/users/stats`        | Estatísticas (total de usuários)  |
+| `GET`    | `/users/email/:email` | Buscar por email                  |
+| `GET`    | `/users/name/:name`   | Buscar por nome                   |
+| `GET`    | `/users/:id`          | Buscar por ID                     |
+| `POST`   | `/users`              | Criar novo usuário                |
+| `PUT`    | `/users/:id`          | Atualizar usuário                 |
+| `DELETE` | `/users/:id`          | Deletar usuário                   |
+
+---
+
+## 👥 Exemplos de Usuários para Cadastrar
+
+### Usuário 1: João Silva
+```json
+{
+  "name": "João Silva",
+  "email": "joao@email.com",
+  "password": "senha123"
+}
+```
+
+### Usuário 2: Maria Santos
+```json
+{
+  "name": "Maria Santos",
+  "email": "maria@email.com",
+  "password": "maria456"
+}
+```
+
+### Usuário 3: Pedro Oliveira
+```json
+{
+  "name": "Pedro Oliveira",
+  "email": "pedro@gmail.com",
+  "password": "pedro789"
+}
+```
+
+### Usuário 4: Ana Costa
+```json
+{
+  "name": "Ana Costa",
+  "email": "ana.costa@hotmail.com",
+  "password": "anaCosta123"
+}
+```
+
+### Usuário 5: Carlos Mendes
+```json
+{
+  "name": "Carlos Mendes",
+  "email": "carlos.mendes@empresa.com",
+  "password": "carlos2024"
+}
+```
+
+---
+
+# 🎯 Sequência de Testes Recomendada
 
 Para apresentar ao professor, siga esta ordem:
+
+## 📚 Fluxo de Livros
 
 ### Fluxo Básico (CRUD):
 1. **Criar 3 livros** (POST /books) com diferentes dados
@@ -592,30 +940,42 @@ Para apresentar ao professor, siga esta ordem:
 14. **Listar apenas disponíveis** (GET /books/available)
 15. **Marcar como disponível** (PATCH /books/1/available)
 
-### Usuários:
-16. **Criar 2 usuários** (POST /users)
-17. **Listar usuários** (GET /users)
-18. **Buscar usuário** (GET /users/1)
-19. **Atualizar usuário** (PUT /users/1)
+---
+
+## 👤 Fluxo de Usuários
+
+### Fluxo Básico (CRUD):
+16. **Criar 3 usuários** (POST /users) com diferentes dados
+17. **Listar todos os usuários** (GET /users) - mostre os 3 usuários criados
+18. **Buscar usuário específico** (GET /users/1) - busque por ID
+19. **Atualizar um usuário** (PUT /users/1) - altere o nome ou email
+20. **Deletar um usuário** (DELETE /users/3) - delete o último
+21. **Listar novamente** (GET /users) - mostre que agora só tem 2 usuários
+
+### Fluxo Avançado (Buscas):
+22. **Buscar por email** (GET /users/email/joao@email.com)
+23. **Buscar por nome** (GET /users/name/João)
+24. **Buscar com filtros** (GET /users/search?name=Silva&email=email.com)
+25. **Ver estatísticas** (GET /users/stats)
 
 ---
 
-## 🔍 Como Interpretar os Códigos de Resposta
+# 🔍 Como Interpretar os Códigos de Resposta
 
 | Código                    | Significado      | Quando aparece                            |
 | ------------------------- | ---------------- | ----------------------------------------- |
 | 200 OK                    | Sucesso          | GET, PUT, PATCH, DELETE bem-sucedidos     |
 | 201 Created               | Criado           | POST bem-sucedido                         |
 | 400 Bad Request           | Dados inválidos  | Campos obrigatórios faltando, ID inválido |
-| 404 Not Found             | Não encontrado   | ID ou ISBN não existe                     |
-| 409 Conflict              | Conflito         | ISBN duplicado                            |
+| 404 Not Found             | Não encontrado   | ID, ISBN ou email não existe              |
+| 409 Conflict              | Conflito         | ISBN ou email duplicado                   |
 | 500 Internal Server Error | Erro no servidor | Erro de banco, código, etc.               |
 
 ---
 
-## ⚠️ Problemas Comuns
+# ⚠️ Problemas Comuns
 
-### 1. "Cannot POST /books" ou "Cannot GET /books"
+### 1. "Cannot POST /books" ou "Cannot GET /users"
 - **Causa:** Servidor não está rodando
 - **Solução:** Execute `npm run dev`
 
@@ -623,42 +983,53 @@ Para apresentar ao professor, siga esta ordem:
 - **Causa:** URL errada ou servidor não está rodando
 - **Solução:** Verifique se a URL é `http://localhost:3000` e se o servidor está ativo
 
-### 3. "Livro com ID X não encontrado"
+### 3. "Livro com ID X não encontrado" ou "Usuário com ID X não encontrado"
 - **Causa:** ID não existe no banco
-- **Solução:** Use um ID válido (liste os livros primeiro com GET /books)
+- **Solução:** Use um ID válido (liste os registros primeiro com GET)
 
-### 4. "Já existe um livro com o ISBN..."
-- **Causa:** ISBN duplicado
-- **Solução:** Use um ISBN diferente
+### 4. "Já existe um livro com o ISBN..." ou "Já existe um usuário com o email..."
+- **Causa:** ISBN ou email duplicado
+- **Solução:** Use um ISBN ou email diferente
 
-### 5. "O título é obrigatório" ou similar
+### 5. "O título é obrigatório" ou "O nome é obrigatório"
 - **Causa:** Campo obrigatório não enviado
 - **Solução:** Verifique se todos os campos obrigatórios estão no body
 
-### 6. Servidor resetou e perdeu dados
+### 6. "O email informado não é válido"
+- **Causa:** Formato de email inválido
+- **Solução:** Use um email no formato correto (exemplo@dominio.com)
+
+### 7. "A senha deve ter pelo menos 6 caracteres"
+- **Causa:** Senha muito curta
+- **Solução:** Use uma senha com 6 ou mais caracteres
+
+### 8. Servidor resetou e perdeu dados
 - **Causa:** O código está com `sync({ force: true })` que recria as tabelas
 - **Solução:** Normal para desenvolvimento. Recadastre os dados ou mude para `sync()`
 
 ---
 
-## 💡 Dicas para a Apresentação
+# 💡 Dicas para a Apresentação
 
-1. **Prepare alguns livros antes** - tenha os JSONs prontos para copiar/colar
+1. **Prepare os dados antes** - tenha os JSONs de livros e usuários prontos para copiar/colar
 2. **Mostre a progressão** - crie, liste, busque, atualize, delete
-3. **Demonstre as buscas avançadas** - filtros por gênero, autor, preço
-4. **Use as estatísticas** - mostre o endpoint /books/stats
+3. **Demonstre as buscas avançadas** - filtros por gênero, autor, nome, email
+4. **Use as estatísticas** - mostre os endpoints /books/stats e /users/stats
 5. **Explique os códigos HTTP** - 200, 201, 400, 404, 409
-6. **Mostre o terminal** - destaque as mensagens de sucesso
-7. **Tenha o banco pronto** - evite erros de conexão durante a demo
+6. **Mostre validações** - tente criar com email inválido, senha curta, etc.
+7. **Mostre o terminal** - destaque as mensagens de sucesso
+8. **Tenha o banco pronto** - evite erros de conexão durante a demo
 
 ---
 
-## ✅ Checklist Antes de Apresentar
+# ✅ Checklist Antes de Apresentar
 
 - [ ] Servidor rodando (`npm run dev`)
-- [ ] Postman aberto e coleção importada
+- [ ] Postman aberto
 - [ ] Pelo menos 5 livros cadastrados (de diferentes gêneros)
-- [ ] Testou todas as rotas pelo menos uma vez
+- [ ] Pelo menos 3 usuários cadastrados
+- [ ] Testou todas as rotas de livros pelo menos uma vez
+- [ ] Testou todas as rotas de usuários pelo menos uma vez
 - [ ] Testou os filtros de busca
 - [ ] Terminal visível mostrando logs
 - [ ] Conexão com banco funcionando
