@@ -53,407 +53,73 @@ Se preferir criar as requisições do zero, siga este guia:
 }
 ```
 
-**Se ISBN duplicado (409 Conflict):**
-```json
-{
-  "success": false,
-  "message": "Já existe um livro com o ISBN 978-0451524935",
-  "statusCode": 409
-}
-```
-
 ---
 
 ### 2️⃣ LISTAR TODOS OS LIVROS (GET)
 
-**Configuração:**
-- **Método:** `GET`
 - **URL:** `http://localhost:3000/books`
-
-**Resposta Esperada (200 OK):**
-```json
-{
-  "success": true,
-  "count": 1,
-  "data": [
-    {
-      "id": 1,
-      "title": "1984",
-      "author": "George Orwell",
-      "isbn": "978-0451524935",
-      "publishedYear": 1949,
-      "genre": "Ficção Científica",
-      "price": 45.90,
-      "rentalPrice": 12.50,
-      "available": true,
-      "description": "Um clássico da literatura distópica"
-    }
-  ]
-}
-```
-
----
 
 ### 3️⃣ BUSCAR LIVRO POR ID (GET)
 
-**Configuração:**
-- **Método:** `GET`
 - **URL:** `http://localhost:3000/books/1`
 
-**Resposta Esperada (200 OK):**
-```json
-{
-  "success": true,
-  "data": {
-    "id": 1,
-    "title": "1984",
-    "author": "George Orwell",
-    "isbn": "978-0451524935",
-    "publishedYear": 1949,
-    "genre": "Ficção Científica",
-    "price": 45.90,
-    "rentalPrice": 12.50,
-    "available": true,
-    "description": "Um clássico da literatura distópica"
-  }
-}
-```
+### 4️⃣ BUSCAR POR ISBN (GET)
 
-**Se não encontrar (404 Not Found):**
-```json
-{
-  "success": false,
-  "message": "Livro com ID 99 não encontrado",
-  "statusCode": 404
-}
-```
-
----
-
-### 4️⃣ BUSCAR LIVRO POR ISBN (GET)
-
-**Configuração:**
-- **Método:** `GET`
 - **URL:** `http://localhost:3000/books/isbn/978-0451524935`
 
-**Resposta Esperada (200 OK):**
-```json
-{
-  "success": true,
-  "data": {
-    "id": 1,
-    "title": "1984",
-    "author": "George Orwell",
-    "isbn": "978-0451524935",
-    "publishedYear": 1949,
-    "genre": "Ficção Científica",
-    "price": 45.90,
-    "rentalPrice": 12.50,
-    "available": true,
-    "description": "Um clássico da literatura distópica"
-  }
-}
-```
+### 5️⃣ BUSCAR POR AUTOR (GET)
 
----
-
-### 5️⃣ BUSCAR LIVROS POR AUTOR (GET)
-
-**Configuração:**
-- **Método:** `GET`
 - **URL:** `http://localhost:3000/books/author/George Orwell`
 
-**Resposta Esperada (200 OK):**
-```json
-{
-  "success": true,
-  "count": 1,
-  "data": [
-    {
-      "id": 1,
-      "title": "1984",
-      "author": "George Orwell",
-      "isbn": "978-0451524935",
-      "publishedYear": 1949,
-      "genre": "Ficção Científica",
-      "price": 45.90,
-      "rentalPrice": 12.50,
-      "available": true,
-      "description": "Um clássico da literatura distópica"
-    }
-  ]
-}
-```
+### 6️⃣ BUSCAR POR GÊNERO (GET)
 
----
-
-### 6️⃣ BUSCAR LIVROS POR GÊNERO (GET)
-
-**Configuração:**
-- **Método:** `GET`
 - **URL:** `http://localhost:3000/books/genre/Fantasia`
 
-**Resposta Esperada (200 OK):**
-```json
-{
-  "success": true,
-  "count": 2,
-  "data": [
-    {
-      "id": 2,
-      "title": "O Senhor dos Anéis",
-      "author": "J.R.R. Tolkien",
-      ...
-    },
-    {
-      "id": 5,
-      "title": "Harry Potter e a Pedra Filosofal",
-      "author": "J.K. Rowling",
-      ...
-    }
-  ]
-}
-```
+### 7️⃣ BUSCAR COM FILTROS (GET)
 
----
+- **URL:** `http://localhost:3000/books/search?genre=Fantasia&available=true`
 
-### 7️⃣ BUSCAR LIVROS COM FILTROS (GET)
+### 8️⃣ LISTAR DISPONÍVEIS (GET)
 
-**Configuração:**
-- **Método:** `GET`
-- **URL:** `http://localhost:3000/books/search`
-- **Query Params (opcionais):**
-  - `genre` - Filtrar por gênero (busca parcial)
-  - `author` - Filtrar por autor (busca parcial)
-  - `available` - Filtrar por disponibilidade (`true` ou `false`)
-  - `minPrice` - Preço mínimo
-  - `maxPrice` - Preço máximo
-  - `publishedYear` - Ano de publicação
-
-**Exemplos de URL:**
-```
-http://localhost:3000/books/search?genre=Fantasia&available=true
-http://localhost:3000/books/search?minPrice=30&maxPrice=100
-http://localhost:3000/books/search?author=Tolkien&available=true
-```
-
-**Resposta Esperada (200 OK):**
-```json
-{
-  "success": true,
-  "count": 1,
-  "filters": {
-    "genre": "Fantasia",
-    "available": true
-  },
-  "data": [
-    {
-      "id": 2,
-      "title": "O Senhor dos Anéis",
-      "author": "J.R.R. Tolkien",
-      ...
-    }
-  ]
-}
-```
-
----
-
-### 8️⃣ LISTAR LIVROS DISPONÍVEIS (GET)
-
-**Configuração:**
-- **Método:** `GET`
 - **URL:** `http://localhost:3000/books/available`
 
-**Resposta Esperada (200 OK):**
-```json
-{
-  "success": true,
-  "count": 3,
-  "data": [
-    { "id": 1, "title": "1984", "available": true, ... },
-    { "id": 2, "title": "O Senhor dos Anéis", "available": true, ... },
-    { "id": 3, "title": "Clean Code", "available": true, ... }
-  ]
-}
-```
+### 9️⃣ ESTATÍSTICAS (GET)
 
----
-
-### 9️⃣ OBTER ESTATÍSTICAS DE LIVROS (GET)
-
-**Configuração:**
-- **Método:** `GET`
 - **URL:** `http://localhost:3000/books/stats`
 
-**Resposta Esperada (200 OK):**
-```json
-{
-  "success": true,
-  "data": {
-    "total": 5,
-    "available": 3,
-    "unavailable": 2
-  }
-}
-```
+### 🔟 ATUALIZAR LIVRO (PUT)
 
----
-
-### 🔟 VERIFICAR DISPONIBILIDADE DO LIVRO (GET)
-
-**Configuração:**
-- **Método:** `GET`
-- **URL:** `http://localhost:3000/books/1/availability`
-
-**Resposta Esperada (200 OK):**
-```json
-{
-  "success": true,
-  "data": {
-    "id": 1,
-    "available": true
-  }
-}
-```
-
----
-
-### 1️⃣1️⃣ ATUALIZAR LIVRO (PUT)
-
-**Configuração:**
-- **Método:** `PUT`
-- **URL:** `http://localhost:3000/books/1`
-- **Headers:**
-  - Key: `Content-Type`
-  - Value: `application/json`
-
-**Body (raw JSON):**
-```json
-{
-  "price": 39.90,
-  "description": "Edição atualizada do clássico"
-}
-```
-
-**Resposta Esperada (200 OK):**
-```json
-{
-  "success": true,
-  "message": "Livro atualizado com sucesso",
-  "data": {
-    "id": 1,
-    "title": "1984",
-    "author": "George Orwell",
-    "isbn": "978-0451524935",
-    "publishedYear": 1949,
-    "genre": "Ficção Científica",
-    "price": 39.90,
-    "rentalPrice": 12.50,
-    "available": true,
-    "description": "Edição atualizada do clássico"
-  }
-}
-```
-
----
-
-### 1️⃣2️⃣ MARCAR LIVRO COMO DISPONÍVEL (PATCH)
-
-**Configuração:**
-- **Método:** `PATCH`
-- **URL:** `http://localhost:3000/books/1/available`
-
-**Resposta Esperada (200 OK):**
-```json
-{
-  "success": true,
-  "message": "Livro marcado como disponível",
-  "data": {
-    "id": 1,
-    "title": "1984",
-    "available": true,
-    ...
-  }
-}
-```
-
----
-
-### 1️⃣3️⃣ MARCAR LIVRO COMO INDISPONÍVEL (PATCH)
-
-**Configuração:**
-- **Método:** `PATCH`
-- **URL:** `http://localhost:3000/books/1/unavailable`
-
-**Resposta Esperada (200 OK):**
-```json
-{
-  "success": true,
-  "message": "Livro marcado como indisponível",
-  "data": {
-    "id": 1,
-    "title": "1984",
-    "available": false,
-    ...
-  }
-}
-```
-
----
-
-### 1️⃣4️⃣ DELETAR LIVRO (DELETE)
-
-**Configuração:**
-- **Método:** `DELETE`
 - **URL:** `http://localhost:3000/books/1`
 
-**Resposta Esperada (200 OK):**
-```json
-{
-  "success": true,
-  "message": "Livro deletado com sucesso",
-  "data": {
-    "id": 1,
-    "title": "1984",
-    "author": "George Orwell",
-    "isbn": "978-0451524935",
-    "publishedYear": 1949,
-    "genre": "Ficção Científica",
-    "price": 39.90,
-    "rentalPrice": 12.50,
-    "available": false,
-    "description": "Edição atualizada do clássico"
-  }
-}
-```
+### 1️⃣1️⃣ DELETAR LIVRO (DELETE)
+
+- **URL:** `http://localhost:3000/books/1`
 
 ---
 
-## 📋 Resumo de Todas as Rotas de Livros
+## 📋 Resumo - Rotas de Livros
 
-| Método   | Rota                      | Descrição                                        |
-| -------- | ------------------------- | ------------------------------------------------ |
-| `GET`    | `/books`                  | Listar todos os livros                           |
-| `GET`    | `/books/search`           | Buscar com filtros (query params)                |
-| `GET`    | `/books/available`        | Listar apenas disponíveis                        |
-| `GET`    | `/books/stats`            | Estatísticas (total, disponíveis, indisponíveis) |
-| `GET`    | `/books/isbn/:isbn`       | Buscar por ISBN                                  |
-| `GET`    | `/books/author/:author`   | Buscar por autor                                 |
-| `GET`    | `/books/genre/:genre`     | Buscar por gênero                                |
-| `GET`    | `/books/:id`              | Buscar por ID                                    |
-| `GET`    | `/books/:id/availability` | Verificar disponibilidade                        |
-| `POST`   | `/books`                  | Criar novo livro                                 |
-| `PUT`    | `/books/:id`              | Atualizar livro                                  |
-| `PATCH`  | `/books/:id/available`    | Marcar como disponível                           |
-| `PATCH`  | `/books/:id/unavailable`  | Marcar como indisponível                         |
-| `DELETE` | `/books/:id`              | Deletar livro                                    |
+| Método   | Rota                      | Descrição                 |
+| -------- | ------------------------- | ------------------------- |
+| `GET`    | `/books`                  | Listar todos              |
+| `GET`    | `/books/search`           | Buscar com filtros        |
+| `GET`    | `/books/available`        | Listar disponíveis        |
+| `GET`    | `/books/stats`            | Estatísticas              |
+| `GET`    | `/books/isbn/:isbn`       | Buscar por ISBN           |
+| `GET`    | `/books/author/:author`   | Buscar por autor          |
+| `GET`    | `/books/genre/:genre`     | Buscar por gênero         |
+| `GET`    | `/books/:id`              | Buscar por ID             |
+| `GET`    | `/books/:id/availability` | Verificar disponibilidade |
+| `POST`   | `/books`                  | Criar livro               |
+| `PUT`    | `/books/:id`              | Atualizar livro           |
+| `PATCH`  | `/books/:id/available`    | Marcar como disponível    |
+| `PATCH`  | `/books/:id/unavailable`  | Marcar como indisponível  |
+| `DELETE` | `/books/:id`              | Deletar livro             |
 
 ---
 
-## 📚 Exemplos de Livros para Cadastrar
+## 📚 Exemplos de Livros
 
-### Livro 1: 1984
 ```json
 {
   "title": "1984",
@@ -467,7 +133,6 @@ http://localhost:3000/books/search?author=Tolkien&available=true
 }
 ```
 
-### Livro 2: O Senhor dos Anéis
 ```json
 {
   "title": "O Senhor dos Anéis",
@@ -481,7 +146,6 @@ http://localhost:3000/books/search?author=Tolkien&available=true
 }
 ```
 
-### Livro 3: Clean Code
 ```json
 {
   "title": "Clean Code",
@@ -492,34 +156,6 @@ http://localhost:3000/books/search?author=Tolkien&available=true
   "price": 120.00,
   "rentalPrice": 35.00,
   "description": "Manual essencial sobre boas práticas de programação"
-}
-```
-
-### Livro 4: Dom Casmurro
-```json
-{
-  "title": "Dom Casmurro",
-  "author": "Machado de Assis",
-  "isbn": "978-8544001080",
-  "publishedYear": 1899,
-  "genre": "Romance",
-  "price": 29.90,
-  "rentalPrice": 8.00,
-  "description": "Clássico da literatura brasileira"
-}
-```
-
-### Livro 5: Harry Potter e a Pedra Filosofal
-```json
-{
-  "title": "Harry Potter e a Pedra Filosofal",
-  "author": "J.K. Rowling",
-  "isbn": "978-8532530787",
-  "publishedYear": 1997,
-  "genre": "Fantasia",
-  "price": 54.90,
-  "rentalPrice": 15.00,
-  "description": "O início da saga mágica mais famosa do mundo"
 }
 ```
 
@@ -562,31 +198,172 @@ http://localhost:3000/books/search?author=Tolkien&available=true
 
 > ⚠️ **Nota:** A senha NÃO é retornada na resposta por questões de segurança.
 
-**Se email duplicado (409 Conflict):**
+---
+
+### 2️⃣ LISTAR TODOS OS USUÁRIOS (GET)
+
+- **URL:** `http://localhost:3000/users`
+
+### 3️⃣ BUSCAR USUÁRIO POR ID (GET)
+
+- **URL:** `http://localhost:3000/users/1`
+
+### 4️⃣ BUSCAR POR EMAIL (GET)
+
+- **URL:** `http://localhost:3000/users/email/joao@email.com`
+
+### 5️⃣ BUSCAR POR NOME (GET)
+
+- **URL:** `http://localhost:3000/users/name/João`
+
+### 6️⃣ BUSCAR COM FILTROS (GET)
+
+- **URL:** `http://localhost:3000/users/search?name=João&email=email.com`
+
+### 7️⃣ ESTATÍSTICAS (GET)
+
+- **URL:** `http://localhost:3000/users/stats`
+
+### 8️⃣ ATUALIZAR USUÁRIO (PUT)
+
+- **URL:** `http://localhost:3000/users/1`
+
+### 9️⃣ DELETAR USUÁRIO (DELETE)
+
+- **URL:** `http://localhost:3000/users/1`
+
+---
+
+## 📋 Resumo - Rotas de Usuários
+
+| Método   | Rota                  | Descrição          |
+| -------- | --------------------- | ------------------ |
+| `GET`    | `/users`              | Listar todos       |
+| `GET`    | `/users/search`       | Buscar com filtros |
+| `GET`    | `/users/stats`        | Estatísticas       |
+| `GET`    | `/users/email/:email` | Buscar por email   |
+| `GET`    | `/users/name/:name`   | Buscar por nome    |
+| `GET`    | `/users/:id`          | Buscar por ID      |
+| `POST`   | `/users`              | Criar usuário      |
+| `PUT`    | `/users/:id`          | Atualizar usuário  |
+| `DELETE` | `/users/:id`          | Deletar usuário    |
+
+---
+
+## 👥 Exemplos de Usuários
+
 ```json
 {
-  "success": false,
-  "message": "Já existe um usuário com o email joao@email.com",
-  "statusCode": 409
+  "name": "João Silva",
+  "email": "joao@email.com",
+  "password": "senha123"
 }
 ```
 
-**Se dados inválidos (400 Bad Request):**
+```json
+{
+  "name": "Maria Santos",
+  "email": "maria@email.com",
+  "password": "maria456"
+}
+```
+
+```json
+{
+  "name": "Pedro Oliveira",
+  "email": "pedro@gmail.com",
+  "password": "pedro789"
+}
+```
+
+---
+
+# 🛒 TESTANDO COMPRAS
+
+---
+
+### 1️⃣ CRIAR UMA COMPRA (POST)
+
+**Configuração:**
+- **Método:** `POST`
+- **URL:** `http://localhost:3000/purchases`
+- **Headers:**
+  - Key: `Content-Type`
+  - Value: `application/json`
+
+**Body (raw JSON):**
+```json
+{
+  "userId": 1,
+  "bookId": 1,
+  "paymentMethod": "credit_card"
+}
+```
+
+> 💡 **Métodos de pagamento aceitos:** `credit_card`, `debit_card`, `pix`, `boleto`
+
+**Resposta Esperada (201 Created):**
+```json
+{
+  "success": true,
+  "message": "Compra realizada com sucesso",
+  "data": {
+    "id": 1,
+    "userId": 1,
+    "bookId": 1,
+    "price": 45.90,
+    "paymentMethod": "credit_card",
+    "paymentStatus": "pending",
+    "purchaseDate": "2025-12-05T10:30:00.000Z",
+    "user": {
+      "id": 1,
+      "name": "João Silva",
+      "email": "joao@email.com"
+    },
+    "book": {
+      "id": 1,
+      "title": "1984",
+      "author": "George Orwell",
+      "isbn": "978-0451524935"
+    }
+  }
+}
+```
+
+**Se usuário não existir (404 Not Found):**
 ```json
 {
   "success": false,
-  "message": "O email informado não é válido",
+  "message": "Usuário com ID 99 não encontrado",
+  "statusCode": 404
+}
+```
+
+**Se livro não existir (404 Not Found):**
+```json
+{
+  "success": false,
+  "message": "Livro com ID 99 não encontrado",
+  "statusCode": 404
+}
+```
+
+**Se método de pagamento inválido (400 Bad Request):**
+```json
+{
+  "success": false,
+  "message": "Método de pagamento 'cash' inválido. Use: credit_card, debit_card, pix ou boleto",
   "statusCode": 400
 }
 ```
 
 ---
 
-### 2️⃣ LISTAR TODOS OS USUÁRIOS (GET)
+### 2️⃣ LISTAR TODAS AS COMPRAS (GET)
 
 **Configuração:**
 - **Método:** `GET`
-- **URL:** `http://localhost:3000/users`
+- **URL:** `http://localhost:3000/purchases`
 
 **Resposta Esperada (200 OK):**
 ```json
@@ -596,13 +373,25 @@ http://localhost:3000/books/search?author=Tolkien&available=true
   "data": [
     {
       "id": 1,
-      "name": "João Silva",
-      "email": "joao@email.com"
+      "userId": 1,
+      "bookId": 1,
+      "price": 45.90,
+      "paymentMethod": "credit_card",
+      "paymentStatus": "completed",
+      "purchaseDate": "2025-12-05T10:30:00.000Z",
+      "user": { "id": 1, "name": "João Silva", "email": "joao@email.com" },
+      "book": { "id": 1, "title": "1984", "author": "George Orwell" }
     },
     {
       "id": 2,
-      "name": "Maria Santos",
-      "email": "maria@email.com"
+      "userId": 2,
+      "bookId": 2,
+      "price": 89.90,
+      "paymentMethod": "pix",
+      "paymentStatus": "pending",
+      "purchaseDate": "2025-12-05T11:00:00.000Z",
+      "user": { "id": 2, "name": "Maria Santos", "email": "maria@email.com" },
+      "book": { "id": 2, "title": "O Senhor dos Anéis", "author": "J.R.R. Tolkien" }
     }
   ]
 }
@@ -610,11 +399,11 @@ http://localhost:3000/books/search?author=Tolkien&available=true
 
 ---
 
-### 3️⃣ BUSCAR USUÁRIO POR ID (GET)
+### 3️⃣ BUSCAR COMPRA POR ID (GET)
 
 **Configuração:**
 - **Método:** `GET`
-- **URL:** `http://localhost:3000/users/1`
+- **URL:** `http://localhost:3000/purchases/1`
 
 **Resposta Esperada (200 OK):**
 ```json
@@ -622,91 +411,117 @@ http://localhost:3000/books/search?author=Tolkien&available=true
   "success": true,
   "data": {
     "id": 1,
-    "name": "João Silva",
-    "email": "joao@email.com"
+    "userId": 1,
+    "bookId": 1,
+    "price": 45.90,
+    "paymentMethod": "credit_card",
+    "paymentStatus": "pending",
+    "purchaseDate": "2025-12-05T10:30:00.000Z",
+    "user": { "id": 1, "name": "João Silva", "email": "joao@email.com" },
+    "book": { "id": 1, "title": "1984", "author": "George Orwell", "isbn": "978-0451524935", "price": 45.90 }
   }
-}
-```
-
-**Se não encontrar (404 Not Found):**
-```json
-{
-  "success": false,
-  "message": "Usuário com ID 99 não encontrado",
-  "statusCode": 404
 }
 ```
 
 ---
 
-### 4️⃣ BUSCAR USUÁRIO POR EMAIL (GET)
+### 4️⃣ BUSCAR COMPRAS POR USUÁRIO (GET)
 
 **Configuração:**
 - **Método:** `GET`
-- **URL:** `http://localhost:3000/users/email/joao@email.com`
+- **URL:** `http://localhost:3000/purchases/user/1`
 
 **Resposta Esperada (200 OK):**
 ```json
 {
   "success": true,
-  "data": {
-    "id": 1,
-    "name": "João Silva",
-    "email": "joao@email.com"
-  }
-}
-```
-
-**Se não encontrar (404 Not Found):**
-```json
-{
-  "success": false,
-  "message": "Usuário não encontrado",
-  "statusCode": 404
-}
-```
-
----
-
-### 5️⃣ BUSCAR USUÁRIOS POR NOME (GET)
-
-**Configuração:**
-- **Método:** `GET`
-- **URL:** `http://localhost:3000/users/name/João`
-
-**Resposta Esperada (200 OK):**
-```json
-{
-  "success": true,
-  "count": 1,
+  "count": 2,
   "data": [
     {
       "id": 1,
-      "name": "João Silva",
-      "email": "joao@email.com"
+      "userId": 1,
+      "bookId": 1,
+      "price": 45.90,
+      "paymentMethod": "credit_card",
+      "paymentStatus": "completed",
+      "purchaseDate": "2025-12-05T10:30:00.000Z",
+      "book": { "id": 1, "title": "1984", "author": "George Orwell" }
     }
   ]
 }
 ```
 
-> 💡 **Dica:** A busca é parcial e não diferencia maiúsculas/minúsculas. Buscar "jo" retornaria "João".
-
 ---
 
-### 6️⃣ BUSCAR USUÁRIOS COM FILTROS (GET)
+### 5️⃣ BUSCAR COMPRAS POR LIVRO (GET)
 
 **Configuração:**
 - **Método:** `GET`
-- **URL:** `http://localhost:3000/users/search`
+- **URL:** `http://localhost:3000/purchases/book/1`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "count": 3,
+  "data": [
+    {
+      "id": 1,
+      "userId": 1,
+      "bookId": 1,
+      "price": 45.90,
+      "paymentMethod": "credit_card",
+      "paymentStatus": "completed",
+      "purchaseDate": "2025-12-05T10:30:00.000Z",
+      "user": { "id": 1, "name": "João Silva", "email": "joao@email.com" }
+    }
+  ]
+}
+```
+
+---
+
+### 6️⃣ VERIFICAR SE USUÁRIO JÁ COMPROU UM LIVRO (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/purchases/check/1/1`
+  - Primeiro parâmetro: `userId`
+  - Segundo parâmetro: `bookId`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "userId": 1,
+    "bookId": 1,
+    "hasPurchased": true
+  }
+}
+```
+
+---
+
+### 7️⃣ BUSCAR COMPRAS COM FILTROS (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/purchases/search`
 - **Query Params (opcionais):**
-  - `name` - Filtrar por nome (busca parcial)
-  - `email` - Filtrar por email (busca parcial)
+  - `userId` - ID do usuário
+  - `bookId` - ID do livro
+  - `paymentStatus` - Status: `pending`, `completed`, `failed`, `refunded`
+  - `paymentMethod` - Método: `credit_card`, `debit_card`, `pix`, `boleto`
+  - `startDate` - Data inicial (formato ISO)
+  - `endDate` - Data final (formato ISO)
 
 **Exemplos de URL:**
 ```
-http://localhost:3000/users/search?name=João
-http://localhost:3000/users/search?email=gmail
-http://localhost:3000/users/search?name=Silva&email=email.com
+http://localhost:3000/purchases/search?paymentStatus=pending
+http://localhost:3000/purchases/search?paymentMethod=pix
+http://localhost:3000/purchases/search?userId=1&paymentStatus=completed
+http://localhost:3000/purchases/search?startDate=2025-01-01&endDate=2025-12-31
 ```
 
 **Resposta Esperada (200 OK):**
@@ -715,13 +530,17 @@ http://localhost:3000/users/search?name=Silva&email=email.com
   "success": true,
   "count": 1,
   "filters": {
-    "name": "João"
+    "paymentStatus": "pending"
   },
   "data": [
     {
-      "id": 1,
-      "name": "João Silva",
-      "email": "joao@email.com"
+      "id": 2,
+      "userId": 2,
+      "bookId": 2,
+      "price": 89.90,
+      "paymentMethod": "pix",
+      "paymentStatus": "pending",
+      ...
     }
   ]
 }
@@ -729,185 +548,578 @@ http://localhost:3000/users/search?name=Silva&email=email.com
 
 ---
 
-### 7️⃣ OBTER ESTATÍSTICAS DE USUÁRIOS (GET)
+### 8️⃣ OBTER ESTATÍSTICAS DE COMPRAS (GET)
 
 **Configuração:**
 - **Método:** `GET`
-- **URL:** `http://localhost:3000/users/stats`
+- **URL:** `http://localhost:3000/purchases/stats`
 
 **Resposta Esperada (200 OK):**
 ```json
 {
   "success": true,
   "data": {
-    "total": 5
+    "total": 10,
+    "pending": 3,
+    "completed": 5,
+    "failed": 1,
+    "refunded": 1,
+    "totalRevenue": 450.50
   }
 }
 ```
 
 ---
 
-### 8️⃣ ATUALIZAR USUÁRIO (PUT)
+### 9️⃣ CONFIRMAR PAGAMENTO (PATCH)
 
 **Configuração:**
-- **Método:** `PUT`
-- **URL:** `http://localhost:3000/users/1`
-- **Headers:**
-  - Key: `Content-Type`
-  - Value: `application/json`
-
-**Body (raw JSON) - Atualizar nome:**
-```json
-{
-  "name": "João Silva Atualizado"
-}
-```
-
-**Body (raw JSON) - Atualizar email:**
-```json
-{
-  "email": "joao.novo@email.com"
-}
-```
-
-**Body (raw JSON) - Atualizar senha:**
-```json
-{
-  "password": "novaSenha456"
-}
-```
-
-**Body (raw JSON) - Atualizar múltiplos campos:**
-```json
-{
-  "name": "João Silva Atualizado",
-  "email": "joao.novo@email.com"
-}
-```
+- **Método:** `PATCH`
+- **URL:** `http://localhost:3000/purchases/1/confirm`
 
 **Resposta Esperada (200 OK):**
 ```json
 {
   "success": true,
-  "message": "Usuário atualizado com sucesso",
+  "message": "Pagamento confirmado com sucesso",
   "data": {
     "id": 1,
-    "name": "João Silva Atualizado",
-    "email": "joao.novo@email.com"
+    "userId": 1,
+    "bookId": 1,
+    "price": 45.90,
+    "paymentMethod": "credit_card",
+    "paymentStatus": "completed",
+    ...
   }
 }
 ```
 
-**Se email duplicado (409 Conflict):**
+**Se já foi confirmado (400 Bad Request):**
 ```json
 {
   "success": false,
-  "message": "Já existe um usuário com o email maria@email.com",
-  "statusCode": 409
-}
-```
-
-**Se dados inválidos (400 Bad Request):**
-```json
-{
-  "success": false,
-  "message": "A senha deve ter pelo menos 6 caracteres",
+  "message": "A compra com ID 1 já foi completada",
   "statusCode": 400
 }
 ```
 
 ---
 
-### 9️⃣ DELETAR USUÁRIO (DELETE)
+### 🔟 MARCAR PAGAMENTO COMO FALHO (PATCH)
 
 **Configuração:**
-- **Método:** `DELETE`
-- **URL:** `http://localhost:3000/users/1`
+- **Método:** `PATCH`
+- **URL:** `http://localhost:3000/purchases/1/fail`
 
 **Resposta Esperada (200 OK):**
 ```json
 {
   "success": true,
-  "message": "Usuário deletado com sucesso",
+  "message": "Pagamento marcado como falho",
   "data": {
     "id": 1,
-    "name": "João Silva",
-    "email": "joao@email.com"
+    "paymentStatus": "failed",
+    ...
   }
 }
 ```
 
-**Se não encontrar (404 Not Found):**
+---
+
+### 1️⃣1️⃣ REEMBOLSAR COMPRA (PATCH)
+
+**Configuração:**
+- **Método:** `PATCH`
+- **URL:** `http://localhost:3000/purchases/1/refund`
+
+> ⚠️ **Nota:** Só é possível reembolsar compras com pagamento `completed`.
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Compra reembolsada com sucesso",
+  "data": {
+    "id": 1,
+    "paymentStatus": "refunded",
+    ...
+  }
+}
+```
+
+**Se não foi completada (400 Bad Request):**
 ```json
 {
   "success": false,
-  "message": "Usuário com ID 99 não encontrado",
-  "statusCode": 404
+  "message": "Só é possível reembolsar compras com pagamento completado",
+  "statusCode": 400
 }
 ```
 
 ---
 
-## 📋 Resumo de Todas as Rotas de Usuários
+### 1️⃣2️⃣ DELETAR COMPRA (DELETE)
 
-| Método   | Rota                  | Descrição                         |
-| -------- | --------------------- | --------------------------------- |
-| `GET`    | `/users`              | Listar todos os usuários          |
-| `GET`    | `/users/search`       | Buscar com filtros (query params) |
-| `GET`    | `/users/stats`        | Estatísticas (total de usuários)  |
-| `GET`    | `/users/email/:email` | Buscar por email                  |
-| `GET`    | `/users/name/:name`   | Buscar por nome                   |
-| `GET`    | `/users/:id`          | Buscar por ID                     |
-| `POST`   | `/users`              | Criar novo usuário                |
-| `PUT`    | `/users/:id`          | Atualizar usuário                 |
-| `DELETE` | `/users/:id`          | Deletar usuário                   |
+**Configuração:**
+- **Método:** `DELETE`
+- **URL:** `http://localhost:3000/purchases/1`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Compra deletada com sucesso",
+  "data": {
+    "id": 1,
+    "userId": 1,
+    "bookId": 1,
+    ...
+  }
+}
+```
 
 ---
 
-## 👥 Exemplos de Usuários para Cadastrar
+## 📋 Resumo - Rotas de Compras
 
-### Usuário 1: João Silva
+| Método   | Rota                               | Descrição               |
+| -------- | ---------------------------------- | ----------------------- |
+| `GET`    | `/purchases`                       | Listar todas            |
+| `GET`    | `/purchases/search`                | Buscar com filtros      |
+| `GET`    | `/purchases/stats`                 | Estatísticas            |
+| `GET`    | `/purchases/user/:userId`          | Compras de um usuário   |
+| `GET`    | `/purchases/book/:bookId`          | Compras de um livro     |
+| `GET`    | `/purchases/check/:userId/:bookId` | Verificar se já comprou |
+| `GET`    | `/purchases/:id`                   | Buscar por ID           |
+| `POST`   | `/purchases`                       | Criar compra            |
+| `PATCH`  | `/purchases/:id/confirm`           | Confirmar pagamento     |
+| `PATCH`  | `/purchases/:id/fail`              | Marcar como falho       |
+| `PATCH`  | `/purchases/:id/refund`            | Reembolsar              |
+| `DELETE` | `/purchases/:id`                   | Deletar compra          |
+
+---
+
+## 🛒 Exemplos de Compras
+
 ```json
 {
-  "name": "João Silva",
-  "email": "joao@email.com",
-  "password": "senha123"
+  "userId": 1,
+  "bookId": 1,
+  "paymentMethod": "credit_card"
 }
 ```
 
-### Usuário 2: Maria Santos
 ```json
 {
-  "name": "Maria Santos",
-  "email": "maria@email.com",
-  "password": "maria456"
+  "userId": 2,
+  "bookId": 2,
+  "paymentMethod": "pix"
 }
 ```
 
-### Usuário 3: Pedro Oliveira
 ```json
 {
-  "name": "Pedro Oliveira",
-  "email": "pedro@gmail.com",
-  "password": "pedro789"
+  "userId": 1,
+  "bookId": 3,
+  "paymentMethod": "boleto"
 }
 ```
 
-### Usuário 4: Ana Costa
+---
+
+# 📖 TESTANDO ALUGUÉIS
+
+---
+
+### 1️⃣ CRIAR UM ALUGUEL (POST)
+
+**Configuração:**
+- **Método:** `POST`
+- **URL:** `http://localhost:3000/rentals`
+- **Headers:**
+  - Key: `Content-Type`
+  - Value: `application/json`
+
+**Body (raw JSON):**
 ```json
 {
-  "name": "Ana Costa",
-  "email": "ana.costa@hotmail.com",
-  "password": "anaCosta123"
+  "userId": 1,
+  "bookId": 1,
+  "paymentMethod": "credit_card",
+  "rentalDays": 7
 }
 ```
 
-### Usuário 5: Carlos Mendes
+> 💡 **Período de aluguel:** Mínimo 1 dia, máximo 30 dias.
+
+**Resposta Esperada (201 Created):**
 ```json
 {
-  "name": "Carlos Mendes",
-  "email": "carlos.mendes@empresa.com",
-  "password": "carlos2024"
+  "success": true,
+  "message": "Aluguel realizado com sucesso",
+  "data": {
+    "id": 1,
+    "userId": 1,
+    "bookId": 1,
+    "rentalPrice": 12.50,
+    "paymentMethod": "credit_card",
+    "paymentStatus": "pending",
+    "rentalStatus": "active",
+    "rentalDate": "2025-12-05T10:30:00.000Z",
+    "dueDate": "2025-12-12T10:30:00.000Z",
+    "daysRemaining": 7,
+    "isOverdue": false,
+    "user": {
+      "id": 1,
+      "name": "João Silva",
+      "email": "joao@email.com"
+    },
+    "book": {
+      "id": 1,
+      "title": "1984",
+      "author": "George Orwell",
+      "isbn": "978-0451524935"
+    }
+  }
+}
+```
+
+**Se período inválido (400 Bad Request):**
+```json
+{
+  "success": false,
+  "message": "O período de aluguel deve ser entre 1 e 30 dias",
+  "statusCode": 400
+}
+```
+
+---
+
+### 2️⃣ LISTAR TODOS OS ALUGUÉIS (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/rentals`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "count": 2,
+  "data": [
+    {
+      "id": 1,
+      "userId": 1,
+      "bookId": 1,
+      "rentalPrice": 12.50,
+      "paymentMethod": "credit_card",
+      "paymentStatus": "completed",
+      "rentalStatus": "active",
+      "rentalDate": "2025-12-05T10:30:00.000Z",
+      "dueDate": "2025-12-12T10:30:00.000Z",
+      "daysRemaining": 5,
+      "isOverdue": false,
+      "user": { "id": 1, "name": "João Silva" },
+      "book": { "id": 1, "title": "1984" }
+    }
+  ]
+}
+```
+
+---
+
+### 3️⃣ BUSCAR ALUGUEL POR ID (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/rentals/1`
+
+---
+
+### 4️⃣ BUSCAR ALUGUÉIS POR USUÁRIO (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/rentals/user/1`
+
+---
+
+### 5️⃣ BUSCAR ALUGUÉIS ATIVOS DE UM USUÁRIO (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/rentals/user/1/active`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "count": 2,
+  "data": [
+    {
+      "id": 1,
+      "rentalStatus": "active",
+      "daysRemaining": 5,
+      "isOverdue": false,
+      "book": { "id": 1, "title": "1984" }
+    }
+  ]
+}
+```
+
+---
+
+### 6️⃣ BUSCAR ALUGUÉIS POR LIVRO (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/rentals/book/1`
+
+---
+
+### 7️⃣ LISTAR ALUGUÉIS ATIVOS (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/rentals/active`
+
+---
+
+### 8️⃣ LISTAR ALUGUÉIS ATRASADOS (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/rentals/overdue`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "count": 1,
+  "data": [
+    {
+      "id": 3,
+      "rentalStatus": "active",
+      "dueDate": "2025-12-01T10:30:00.000Z",
+      "daysRemaining": 0,
+      "isOverdue": true,
+      "user": { "id": 2, "name": "Maria Santos" },
+      "book": { "id": 2, "title": "O Senhor dos Anéis" }
+    }
+  ]
+}
+```
+
+---
+
+### 9️⃣ BUSCAR ALUGUÉIS COM FILTROS (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/rentals/search`
+- **Query Params (opcionais):**
+  - `userId` - ID do usuário
+  - `bookId` - ID do livro
+  - `paymentStatus` - Status: `pending`, `completed`, `failed`, `refunded`
+  - `rentalStatus` - Status: `active`, `returned`, `overdue`
+  - `startDate` - Data inicial (formato ISO)
+  - `endDate` - Data final (formato ISO)
+
+**Exemplos de URL:**
+```
+http://localhost:3000/rentals/search?rentalStatus=active
+http://localhost:3000/rentals/search?paymentStatus=pending
+http://localhost:3000/rentals/search?userId=1&rentalStatus=active
+```
+
+---
+
+### 🔟 OBTER ESTATÍSTICAS DE ALUGUÉIS (GET)
+
+**Configuração:**
+- **Método:** `GET`
+- **URL:** `http://localhost:3000/rentals/stats`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "total": 15,
+    "active": 5,
+    "returned": 8,
+    "overdue": 2,
+    "pendingPayment": 3,
+    "completedPayment": 12,
+    "totalRevenue": 187.50
+  }
+}
+```
+
+---
+
+### 1️⃣1️⃣ DEVOLVER LIVRO (PATCH)
+
+**Configuração:**
+- **Método:** `PATCH`
+- **URL:** `http://localhost:3000/rentals/1/return`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Livro devolvido com sucesso",
+  "data": {
+    "id": 1,
+    "rentalStatus": "returned",
+    "returnDate": "2025-12-10T15:00:00.000Z",
+    ...
+  }
+}
+```
+
+**Se já foi devolvido (400 Bad Request):**
+```json
+{
+  "success": false,
+  "message": "O aluguel com ID 1 já foi devolvido",
+  "statusCode": 400
+}
+```
+
+---
+
+### 1️⃣2️⃣ CONFIRMAR PAGAMENTO DO ALUGUEL (PATCH)
+
+**Configuração:**
+- **Método:** `PATCH`
+- **URL:** `http://localhost:3000/rentals/1/confirm`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Pagamento confirmado com sucesso",
+  "data": {
+    "id": 1,
+    "paymentStatus": "completed",
+    ...
+  }
+}
+```
+
+---
+
+### 1️⃣3️⃣ RENOVAR ALUGUEL (PATCH)
+
+**Configuração:**
+- **Método:** `PATCH`
+- **URL:** `http://localhost:3000/rentals/1/renew`
+- **Headers:**
+  - Key: `Content-Type`
+  - Value: `application/json`
+
+**Body (raw JSON):**
+```json
+{
+  "additionalDays": 7,
+  "paymentMethod": "pix"
+}
+```
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Aluguel renovado com sucesso",
+  "data": {
+    "id": 1,
+    "rentalStatus": "active",
+    "dueDate": "2025-12-19T10:30:00.000Z",
+    "daysRemaining": 14,
+    ...
+  }
+}
+```
+
+**Se não está ativo (400 Bad Request):**
+```json
+{
+  "success": false,
+  "message": "O aluguel com ID 1 não está ativo",
+  "statusCode": 400
+}
+```
+
+---
+
+### 1️⃣4️⃣ DELETAR ALUGUEL (DELETE)
+
+**Configuração:**
+- **Método:** `DELETE`
+- **URL:** `http://localhost:3000/rentals/1`
+
+**Resposta Esperada (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Aluguel deletado com sucesso",
+  "data": {
+    "id": 1,
+    ...
+  }
+}
+```
+
+---
+
+## 📋 Resumo - Rotas de Aluguéis
+
+| Método   | Rota                           | Descrição              |
+| -------- | ------------------------------ | ---------------------- |
+| `GET`    | `/rentals`                     | Listar todos           |
+| `GET`    | `/rentals/search`              | Buscar com filtros     |
+| `GET`    | `/rentals/stats`               | Estatísticas           |
+| `GET`    | `/rentals/active`              | Listar ativos          |
+| `GET`    | `/rentals/overdue`             | Listar atrasados       |
+| `GET`    | `/rentals/user/:userId`        | Aluguéis de um usuário |
+| `GET`    | `/rentals/user/:userId/active` | Ativos de um usuário   |
+| `GET`    | `/rentals/book/:bookId`        | Aluguéis de um livro   |
+| `GET`    | `/rentals/:id`                 | Buscar por ID          |
+| `POST`   | `/rentals`                     | Criar aluguel          |
+| `PATCH`  | `/rentals/:id/return`          | Devolver livro         |
+| `PATCH`  | `/rentals/:id/confirm`         | Confirmar pagamento    |
+| `PATCH`  | `/rentals/:id/renew`           | Renovar aluguel        |
+| `DELETE` | `/rentals/:id`                 | Deletar aluguel        |
+
+---
+
+## 📖 Exemplos de Aluguéis
+
+```json
+{
+  "userId": 1,
+  "bookId": 1,
+  "paymentMethod": "credit_card",
+  "rentalDays": 7
+}
+```
+
+```json
+{
+  "userId": 2,
+  "bookId": 2,
+  "paymentMethod": "pix",
+  "rentalDays": 14
+}
+```
+
+```json
+{
+  "userId": 1,
+  "bookId": 3,
+  "paymentMethod": "debit_card",
+  "rentalDays": 30
 }
 ```
 
@@ -915,110 +1127,66 @@ http://localhost:3000/users/search?name=Silva&email=email.com
 
 # 🎯 Sequência de Testes Recomendada
 
-Para apresentar ao professor, siga esta ordem:
+## Passo 1: Criar dados base
+1. Criar 3 livros (POST /books)
+2. Criar 2 usuários (POST /users)
 
-## 📚 Fluxo de Livros
+## Passo 2: Testar compras
+3. Criar uma compra (POST /purchases)
+4. Listar compras (GET /purchases)
+5. Confirmar pagamento (PATCH /purchases/1/confirm)
+6. Ver estatísticas (GET /purchases/stats)
+7. Verificar se usuário já comprou (GET /purchases/check/1/1)
 
-### Fluxo Básico (CRUD):
-1. **Criar 3 livros** (POST /books) com diferentes dados
-2. **Listar todos os livros** (GET /books) - mostre os 3 livros criados
-3. **Buscar livro específico** (GET /books/1) - busque por ID
-4. **Atualizar um livro** (PUT /books/1) - altere o preço
-5. **Deletar um livro** (DELETE /books/3) - delete o último
-6. **Listar novamente** (GET /books) - mostre que agora só tem 2 livros
-
-### Fluxo Avançado (Buscas e Filtros):
-7. **Buscar por ISBN** (GET /books/isbn/978-0451524935)
-8. **Buscar por autor** (GET /books/author/Tolkien)
-9. **Buscar por gênero** (GET /books/genre/Fantasia)
-10. **Buscar com filtros** (GET /books/search?minPrice=50&available=true)
-11. **Ver estatísticas** (GET /books/stats)
-
-### Fluxo de Disponibilidade:
-12. **Marcar como indisponível** (PATCH /books/1/unavailable)
-13. **Verificar disponibilidade** (GET /books/1/availability)
-14. **Listar apenas disponíveis** (GET /books/available)
-15. **Marcar como disponível** (PATCH /books/1/available)
+## Passo 3: Testar aluguéis
+8. Criar um aluguel de 7 dias (POST /rentals)
+9. Listar aluguéis ativos (GET /rentals/active)
+10. Confirmar pagamento (PATCH /rentals/1/confirm)
+11. Renovar aluguel (PATCH /rentals/1/renew)
+12. Devolver livro (PATCH /rentals/1/return)
+13. Ver estatísticas (GET /rentals/stats)
 
 ---
 
-## 👤 Fluxo de Usuários
+# 🔍 Status de Pagamento
 
-### Fluxo Básico (CRUD):
-16. **Criar 3 usuários** (POST /users) com diferentes dados
-17. **Listar todos os usuários** (GET /users) - mostre os 3 usuários criados
-18. **Buscar usuário específico** (GET /users/1) - busque por ID
-19. **Atualizar um usuário** (PUT /users/1) - altere o nome ou email
-20. **Deletar um usuário** (DELETE /users/3) - delete o último
-21. **Listar novamente** (GET /users) - mostre que agora só tem 2 usuários
+| Status      | Descrição             |
+| ----------- | --------------------- |
+| `pending`   | Aguardando pagamento  |
+| `completed` | Pagamento confirmado  |
+| `failed`    | Pagamento falhou      |
+| `refunded`  | Pagamento reembolsado |
 
-### Fluxo Avançado (Buscas):
-22. **Buscar por email** (GET /users/email/joao@email.com)
-23. **Buscar por nome** (GET /users/name/João)
-24. **Buscar com filtros** (GET /users/search?name=Silva&email=email.com)
-25. **Ver estatísticas** (GET /users/stats)
+# 📖 Status de Aluguel
 
----
+| Status     | Descrição                          |
+| ---------- | ---------------------------------- |
+| `active`   | Aluguel ativo, livro com o usuário |
+| `returned` | Livro devolvido                    |
+| `overdue`  | Aluguel atrasado                   |
 
-# 🔍 Como Interpretar os Códigos de Resposta
+# 💳 Métodos de Pagamento
 
-| Código                    | Significado      | Quando aparece                            |
-| ------------------------- | ---------------- | ----------------------------------------- |
-| 200 OK                    | Sucesso          | GET, PUT, PATCH, DELETE bem-sucedidos     |
-| 201 Created               | Criado           | POST bem-sucedido                         |
-| 400 Bad Request           | Dados inválidos  | Campos obrigatórios faltando, ID inválido |
-| 404 Not Found             | Não encontrado   | ID, ISBN ou email não existe              |
-| 409 Conflict              | Conflito         | ISBN ou email duplicado                   |
-| 500 Internal Server Error | Erro no servidor | Erro de banco, código, etc.               |
+| Método        | Descrição         |
+| ------------- | ----------------- |
+| `credit_card` | Cartão de crédito |
+| `debit_card`  | Cartão de débito  |
+| `pix`         | PIX               |
+| `boleto`      | Boleto bancário   |
 
 ---
 
-# ⚠️ Problemas Comuns
+# 🔍 Códigos de Resposta
 
-### 1. "Cannot POST /books" ou "Cannot GET /users"
-- **Causa:** Servidor não está rodando
-- **Solução:** Execute `npm run dev`
-
-### 2. "ECONNREFUSED"
-- **Causa:** URL errada ou servidor não está rodando
-- **Solução:** Verifique se a URL é `http://localhost:3000` e se o servidor está ativo
-
-### 3. "Livro com ID X não encontrado" ou "Usuário com ID X não encontrado"
-- **Causa:** ID não existe no banco
-- **Solução:** Use um ID válido (liste os registros primeiro com GET)
-
-### 4. "Já existe um livro com o ISBN..." ou "Já existe um usuário com o email..."
-- **Causa:** ISBN ou email duplicado
-- **Solução:** Use um ISBN ou email diferente
-
-### 5. "O título é obrigatório" ou "O nome é obrigatório"
-- **Causa:** Campo obrigatório não enviado
-- **Solução:** Verifique se todos os campos obrigatórios estão no body
-
-### 6. "O email informado não é válido"
-- **Causa:** Formato de email inválido
-- **Solução:** Use um email no formato correto (exemplo@dominio.com)
-
-### 7. "A senha deve ter pelo menos 6 caracteres"
-- **Causa:** Senha muito curta
-- **Solução:** Use uma senha com 6 ou mais caracteres
-
-### 8. Servidor resetou e perdeu dados
-- **Causa:** O código está com `sync({ force: true })` que recria as tabelas
-- **Solução:** Normal para desenvolvimento. Recadastre os dados ou mude para `sync()`
-
----
-
-# 💡 Dicas para a Apresentação
-
-1. **Prepare os dados antes** - tenha os JSONs de livros e usuários prontos para copiar/colar
-2. **Mostre a progressão** - crie, liste, busque, atualize, delete
-3. **Demonstre as buscas avançadas** - filtros por gênero, autor, nome, email
-4. **Use as estatísticas** - mostre os endpoints /books/stats e /users/stats
-5. **Explique os códigos HTTP** - 200, 201, 400, 404, 409
-6. **Mostre validações** - tente criar com email inválido, senha curta, etc.
-7. **Mostre o terminal** - destaque as mensagens de sucesso
-8. **Tenha o banco pronto** - evite erros de conexão durante a demo
+| Código | Significado      | Quando aparece                        |
+| ------ | ---------------- | ------------------------------------- |
+| 200    | Sucesso          | GET, PUT, PATCH, DELETE bem-sucedidos |
+| 201    | Criado           | POST bem-sucedido                     |
+| 400    | Dados inválidos  | Campos faltando, período inválido     |
+| 402    | Pagamento falhou | Erro no processamento de pagamento    |
+| 404    | Não encontrado   | ID não existe                         |
+| 409    | Conflito         | ISBN ou email duplicado               |
+| 500    | Erro no servidor | Erro de banco, código, etc.           |
 
 ---
 
@@ -1026,13 +1194,14 @@ Para apresentar ao professor, siga esta ordem:
 
 - [ ] Servidor rodando (`npm run dev`)
 - [ ] Postman aberto
-- [ ] Pelo menos 5 livros cadastrados (de diferentes gêneros)
-- [ ] Pelo menos 3 usuários cadastrados
-- [ ] Testou todas as rotas de livros pelo menos uma vez
-- [ ] Testou todas as rotas de usuários pelo menos uma vez
-- [ ] Testou os filtros de busca
+- [ ] Pelo menos 3 livros cadastrados
+- [ ] Pelo menos 2 usuários cadastrados
+- [ ] Pelo menos 2 compras criadas
+- [ ] Pelo menos 2 aluguéis criados
+- [ ] Testou confirmação de pagamento
+- [ ] Testou devolução de livro
+- [ ] Testou renovação de aluguel
 - [ ] Terminal visível mostrando logs
-- [ ] Conexão com banco funcionando
 
 ---
 
