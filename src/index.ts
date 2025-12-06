@@ -5,6 +5,8 @@ import sequelize from "./config/database";
 // Rotas
 import bookRoutes from "./routes/bookRoutes";
 import userRoutes from "./routes/userRoutes";
+import purchaseRoutes from "./routes/purchaseRoutes";
+import rentalRoutes from "./routes/rentalRoutes";
 
 // Middlewares
 import { errorHandler } from "./middlewares/errorHandler";
@@ -17,6 +19,8 @@ app.use(express.json());
 // ==================== ROTAS ====================
 app.use("/books", bookRoutes);
 app.use("/users", userRoutes);
+app.use("/purchases", purchaseRoutes);
+app.use("/rentals", rentalRoutes);
 
 // ==================== MIDDLEWARE DE ERRO ====================
 app.use(errorHandler);
