@@ -54,7 +54,8 @@ export class BookController {
     // Buscar livro por ID
     getById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -74,7 +75,9 @@ export class BookController {
     // Buscar livro por ISBN
     getByIsbn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const { isbn } = req.params;
+            // CORREÇÃO: Forçando string
+            const isbn = req.params.isbn as string;
+            
             const book = await this.bookService.getBookByIsbn(isbn);
 
             res.status(200).json({
@@ -89,7 +92,9 @@ export class BookController {
     // Buscar livros por autor
     getByAuthor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const { author } = req.params;
+            // CORREÇÃO: Forçando string
+            const author = req.params.author as string;
+            
             const books = await this.bookService.getBooksByAuthor(author);
 
             res.status(200).json({
@@ -105,7 +110,9 @@ export class BookController {
     // Buscar livros por gênero
     getByGenre = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const { genre } = req.params;
+            // CORREÇÃO: Forçando string
+            const genre = req.params.genre as string;
+            
             const books = await this.bookService.getBooksByGenre(genre);
 
             res.status(200).json({
@@ -121,9 +128,10 @@ export class BookController {
     // Buscar livros por título
     getByTitle = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const { title } = req.query;
+            // CORREÇÃO: Forçando string para simplificar a validação
+            const title = req.query.title as string;
 
-            if (!title || typeof title !== 'string') {
+            if (!title) {
                 throw new AppError("Título é obrigatório", 400);
             }
 
@@ -159,6 +167,7 @@ export class BookController {
         try {
             const filters: BookFiltersDTO = {};
 
+            // CORREÇÃO: Adicionado 'as string' em todas as conversões
             if (req.query.genre) {
                 filters.genre = req.query.genre as string;
             }
@@ -168,6 +177,7 @@ export class BookController {
             }
 
             if (req.query.available !== undefined) {
+                // Aqui mantemos a comparação simples ou forçamos string se necessário
                 filters.available = req.query.available === 'true';
             }
 
@@ -199,7 +209,8 @@ export class BookController {
     // Atualizar livro
     update = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -207,7 +218,6 @@ export class BookController {
 
             const updateData: UpdateBookDTO = {};
 
-            // Só inclui campos que foram enviados
             if (req.body.title !== undefined) updateData.title = req.body.title;
             if (req.body.author !== undefined) updateData.author = req.body.author;
             if (req.body.isbn !== undefined) updateData.isbn = req.body.isbn;
@@ -233,7 +243,8 @@ export class BookController {
     // Marcar livro como disponível
     markAvailable = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -254,7 +265,8 @@ export class BookController {
     // Marcar livro como indisponível
     markUnavailable = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -275,7 +287,8 @@ export class BookController {
     // Verificar disponibilidade
     checkAvailability = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -295,7 +308,8 @@ export class BookController {
     // Deletar livro
     delete = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);

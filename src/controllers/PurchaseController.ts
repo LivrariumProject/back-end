@@ -19,6 +19,15 @@ export class PurchaseController {
                 paymentMethod: req.body.paymentMethod
             };
 
+            // Ou pega do token (usuário logado) ou do body (admin criando para outro)
+            const authenticatedUserId = (req as any).user?.id;
+            const authenticatedUserRole = (req as any).user?.role;
+
+            // Se não é admin e está tentando criar compra para outro usuário, bloqueia
+            if (createData.userId !== authenticatedUserId && authenticatedUserRole !== 'admin') {
+                throw new AppError("Você só pode criar compras para si mesmo.", 403);
+            }
+
             const purchase = await this.purchaseService.createPurchase(createData);
 
             res.status(201).json({
@@ -49,7 +58,8 @@ export class PurchaseController {
     // Buscar compra por ID
     getById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string' para garantir o tipo
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -69,10 +79,20 @@ export class PurchaseController {
     // Buscar compras por usuário
     getByUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const userId = parseInt(req.params.userId, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const userId = parseInt(req.params.userId as string, 10);
 
             if (isNaN(userId)) {
                 throw new AppError("ID do usuário inválido", 400);
+            }
+
+            // Nota: Se 'user' for injetado por middleware, 'req as any' funciona,
+            // mas o ideal seria estender a interface Request (@types/express).
+            const authenticatedUserId = (req as any).user?.id;
+
+            // Se não é admin E está tentando acessar outro usuário, bloqueia
+            if (authenticatedUserId !== userId && (req as any).user?.role !== 'admin') {
+                throw new AppError("Acesso negado. Você só pode ver suas próprias compras.", 403);
             }
 
             const purchases = await this.purchaseService.getPurchasesByUser(userId);
@@ -90,7 +110,8 @@ export class PurchaseController {
     // Buscar compras por livro
     getByBook = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const bookId = parseInt(req.params.bookId, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const bookId = parseInt(req.params.bookId as string, 10);
 
             if (isNaN(bookId)) {
                 throw new AppError("ID do livro inválido", 400);
@@ -113,6 +134,7 @@ export class PurchaseController {
         try {
             const filters: PurchaseFiltersDTO = {};
 
+            // CORREÇÃO: req.query pode ser array, então forçamos 'as string'
             if (req.query.userId) {
                 filters.userId = parseInt(req.query.userId as string, 10);
             }
@@ -153,7 +175,7 @@ export class PurchaseController {
     // Confirmar pagamento
     confirmPayment = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -174,7 +196,7 @@ export class PurchaseController {
     // Marcar pagamento como falho
     failPayment = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -195,7 +217,7 @@ export class PurchaseController {
     // Reembolsar compra
     refund = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -216,11 +238,18 @@ export class PurchaseController {
     // Verificar se usuário já comprou um livro
     checkUserPurchase = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const userId = parseInt(req.params.userId, 10);
-            const bookId = parseInt(req.params.bookId, 10);
+            const userId = parseInt(req.params.userId as string, 10);
+            const bookId = parseInt(req.params.bookId as string, 10);
 
             if (isNaN(userId) || isNaN(bookId)) {
                 throw new AppError("IDs inválidos", 400);
+            }
+
+            const authenticatedUserId = (req as any).user?.id;
+
+            // Se não é admin E está tentando acessar outro usuário, bloqueia
+            if (authenticatedUserId !== userId && (req as any).user?.role !== 'admin') {
+                throw new AppError("Acesso negado. Você só pode ver suas próprias compras.", 403);
             }
 
             const hasPurchased = await this.purchaseService.userHasPurchased(userId, bookId);
@@ -241,7 +270,7 @@ export class PurchaseController {
     // Deletar compra
     delete = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);

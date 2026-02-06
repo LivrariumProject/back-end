@@ -49,7 +49,16 @@ export class UserController {
     // Buscar usuário por ID
     getById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
+
+            const authenticatedUserId = (req as any).user?.id;
+            const authenticatedUserRole = (req as any).user?.role;
+
+            // Se não é admin E não é o próprio usuário, bloqueia
+            if (id !== authenticatedUserId && authenticatedUserRole !== 'admin') {
+                throw new AppError("Acesso negado.", 403);
+            }
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -69,7 +78,9 @@ export class UserController {
     // Buscar usuário por email
     getByEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const { email } = req.params;
+            // CORREÇÃO: Forçando tipo string para evitar erros de tipagem
+            const email = req.params.email as string;
+            
             const user = await this.userService.getUserByEmail(email);
 
             res.status(200).json({
@@ -84,7 +95,9 @@ export class UserController {
     // Buscar usuários por nome
     getByName = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const { name } = req.params;
+            // CORREÇÃO: Forçando tipo string
+            const name = req.params.name as string;
+            
             const users = await this.userService.getUsersByName(name);
 
             res.status(200).json({
@@ -102,6 +115,7 @@ export class UserController {
         try {
             const filters: UserFiltersDTO = {};
 
+            // CORREÇÃO: Garantindo que req.query seja tratado como string
             if (req.query.name) {
                 filters.name = req.query.name as string;
             }
@@ -126,7 +140,16 @@ export class UserController {
     // Atualizar usuário
     update = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
+
+            const authenticatedUserId = (req as any).user?.id;
+            const authenticatedUserRole = (req as any).user?.role;
+
+            // Se não é admin E não é o próprio usuário, bloqueia
+            if (id !== authenticatedUserId && authenticatedUserRole !== 'admin') {
+                throw new AppError("Acesso negado.", 403);
+            }
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -154,7 +177,16 @@ export class UserController {
     // Deletar usuário
     delete = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
+
+            const authenticatedUserId = (req as any).user?.id;
+            const authenticatedUserRole = (req as any).user?.role;
+
+            // Se não é admin E não é o próprio usuário, bloqueia
+            if (id !== authenticatedUserId && authenticatedUserRole !== 'admin') {
+                throw new AppError("Acesso negado.", 403);
+            }
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
