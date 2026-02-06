@@ -31,40 +31,26 @@ app.get('/protected', authenticate, (req: Request, res: Response) => {
 });
 
 // Rota de registro (aceita role)
-app.post("/users", async (req: Request, res: Response) => {
+app.post("/register", async (req: Request, res: Response) => {
   try {
-    const { name, email, password, role = 'user' } = req.body;  //Padrão user
-    const userRepo = new UserRepository();
-
-    // Verifica se email já existe
-    const existingUser = await userRepo.findByEmail(email);
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already exists" });
-    }
-
-    // Valida role
-    if (role !== 'user' && role !== 'admin') {
-      return res.status(400).json({ message: "Invalid role. Use 'user' or 'admin'" });
-    }
-
-    // Criptografa a senha
+    const { name, email, password } = req.body;
     const hashedPassword = await hashPassword(password);
     
-    const user = await User.create({  //User.create direto
-      name,
-      email,
-      password:hashedPassword,
-      role
+    const user = await User.create({ 
+      name, 
+      email, 
+      password: hashedPassword,
+      role: 'user' // Valor padrão
     });
     
-    return res.status(201).json({
+    res.status(201).json({
       id: user.id,
       name: user.name,
       email: user.email,
       role: user.role
     });
   } catch (error: any) {
-    return res.status(500).json({ message: "Erro ao criar usuário", error: error.message });
+    res.status(500).json({ message: "Erro ao criar usuário", error: error.message });
   }
 });
 
@@ -74,7 +60,7 @@ app.use('/auth', authRoutes);
 
 // Rotas protegidas (com autenticação)
 app.use("/books", authenticate, bookRoutes);
-//app.use("/users", authenticate, userRoutes);
+app.use("/users", authenticate, userRoutes);
 app.use("/purchases", authenticate, purchaseRoutes);
 app.use("/rentals", authenticate, rentalRoutes);
 

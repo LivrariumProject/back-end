@@ -20,6 +20,13 @@ export class RentalController {
                 rentalDays: req.body.rentalDays
             };
 
+            const authenticatedUserId = (req as any).user?.id;
+            const authenticatedUserRole = (req as any).user?.role;
+
+            if (createData.userId !== authenticatedUserId && authenticatedUserRole !== 'admin') {
+                throw new AppError("Você só pode criar aluguéis para si mesmo.", 403);
+            }
+
             const rental = await this.rentalService.createRental(createData);
 
             res.status(201).json({
@@ -78,6 +85,13 @@ export class RentalController {
                 throw new AppError("ID do usuário inválido", 400);
             }
 
+            const authenticatedUserId = (req as any).user?.id;
+            const authenticatedUserRole = (req as any).user?.role;
+
+            if (userId !== authenticatedUserId && authenticatedUserRole !== 'admin') {
+                throw new AppError("Acesso negado. Você só pode ver seus próprios aluguéis.", 403);
+            }
+
             const rentals = await this.rentalService.getRentalsByUser(userId);
 
             res.status(200).json({
@@ -98,6 +112,13 @@ export class RentalController {
 
             if (isNaN(userId)) {
                 throw new AppError("ID do usuário inválido", 400);
+            }
+
+            const authenticatedUserId = (req as any).user?.id;
+            const authenticatedUserRole = (req as any).user?.role;
+
+            if (userId !== authenticatedUserId && authenticatedUserRole !== 'admin') {
+                throw new AppError("Acesso negado. Você só pode ver seus próprios aluguéis ativos.", 403);
             }
 
             const rentals = await this.rentalService.getActiveRentalsByUser(userId);
