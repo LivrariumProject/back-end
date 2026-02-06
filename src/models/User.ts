@@ -7,6 +7,7 @@ export interface UserAttributes {
   name: string;
   email: string;
   password: string;
+  role: 'admin' | 'user'; // auth e auto
 }
 
 // 2. Atributos necessários para criar (id é auto incremento)
@@ -22,6 +23,7 @@ export class User
   public name!: string;
   public email!: string;
   public password!: string;
+  public role!: 'admin' | 'user';
 }
 
 
@@ -44,6 +46,11 @@ User.init(
     },
     password: {
       type: DataTypes.STRING,
+      allowNull: false
+    },
+    role: {
+      type: DataTypes.ENUM('admin', 'user'),
+      defaultValue: 'user',
       allowNull: false
     }
   },

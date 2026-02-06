@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import sequelize from "./config/database";
 import { UserRepository } from './repository/UserRepository';
 import { hashPassword } from "./utils/auth";
+import { User } from './models/User';
 
 // Rotas
 import bookRoutes from "./routes/bookRoutes";
@@ -23,29 +24,47 @@ app.use(express.json());
 
 // Rota protegida de exemplo
 app.get('/protected', authenticate, (req: Request, res: Response) => {
-  res.status(200).json({ 
+  res.status(200).json({
     message: 'You have access to this protected route',
-    user: (req as any).user 
+    user: (req as any).user
   });
 });
 
+// Rota de registro (aceita role)
 app.post("/users", async (req: Request, res: Response) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role = 'user' } = req.body;  //Padrão user
     const userRepo = new UserRepository();
+
+    // Verifica se email já existe
+    const existingUser = await userRepo.findByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+
+    // Valida role
+    if (role !== 'user' && role !== 'admin') {
+      return res.status(400).json({ message: "Invalid role. Use 'user' or 'admin'" });
+    }
 
     // Criptografa a senha
     const hashedPassword = await hashPassword(password);
     
-    const user = await userRepo.create({ 
-      name, 
-      email, 
-      password:hashedPassword   
+    const user = await User.create({  //User.create direto
+      name,
+      email,
+      password:hashedPassword,
+      role
     });
     
-    return res.status(201).json(user);
+    return res.status(201).json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    });
   } catch (error: any) {
-    return res.status(500).json({ message: "Erro ao criar usuário" });
+    return res.status(500).json({ message: "Erro ao criar usuário", error: error.message });
   }
 });
 
@@ -66,9 +85,25 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 3000;
 
 sequelize
-  .sync({ force: true }) // CUIDADO: apaga as tabelas toda vez que sobe!
-  .then(() => {
+  .sync({ force: true })
+  .then(async () => {
     console.log("✅ Banco de dados conectado!");
+    
+    // Criar admin padrão se não existir
+    const adminEmail = 'admin@livrarium.com';
+    const existingAdmin = await User.findOne({ where: { email: adminEmail } });
+    
+    if (!existingAdmin) {
+      const hashedPassword = await hashPassword('admin123');
+      await User.create({
+        name: 'Administrador',
+        email: adminEmail,
+        password: hashedPassword,
+        role: 'admin'
+      });
+      console.log('👑 Usuário admin criado: admin@livrarium.com / admin123');
+    }
+    
     app.listen(PORT, () =>
       console.log(`🚀 Servidor rodando na porta ${PORT}`)
     );
@@ -76,3 +111,4 @@ sequelize
   .catch((error) => {
     console.error("❌ Erro ao conectar ao banco de dados:", error);
   });
+  
