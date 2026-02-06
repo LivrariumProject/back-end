@@ -14,9 +14,13 @@ router.get("/search", authenticate, authorize('admin'), userController.search); 
 router.get("/stats", authenticate, authorize('admin'), userController.getStats);         // GET /users/stats - Estatísticas
 router.get("/email/:email", authenticate, authorize('admin'), userController.getByEmail);     // GET /users/email/:email - Buscar por email
 router.get("/name/:name", authenticate, authorize('admin'), userController.getByName);         // GET /users/name/:name - Buscar por nome
+
+// Rotas de usuário autenticado (pode acessar apenas seus próprios dados)
 router.get("/:id", authenticate, userController.getById);                // GET /users/:id - Buscar por ID
-//router.post("/", userController.create);                   // POST /users - Criar usuário
 router.put("/:id", authenticate, userController.update);                   // PUT /users/:id - Atualizar usuário
 router.delete("/:id", authenticate, userController.delete);               // DELETE /users/:id - Deletar usuário
+
+// NOTA: Criação de usuário via POST /register (rota pública no index.ts)
+// NOTA: Criação de usuário por admin via POST /users (se implementado)
 
 export default router;

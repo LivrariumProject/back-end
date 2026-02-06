@@ -59,7 +59,7 @@ app.post("/register", async (req: Request, res: Response) => {
 app.use('/auth', authRoutes);
 
 // Rotas protegidas (com autenticação)
-app.use("/books", authenticate, bookRoutes);
+app.use("/books", bookRoutes);
 app.use("/users", authenticate, userRoutes);
 app.use("/purchases", authenticate, purchaseRoutes);
 app.use("/rentals", authenticate, rentalRoutes);
