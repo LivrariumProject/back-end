@@ -3,9 +3,12 @@ import { User } from "../models/User";
 import { CreateUserDTO, UpdateUserDTO, UserFiltersDTO } from "../dtos/UserDTO";
 
 export class UserRepository {
-  // Criar um novo usuário
+  // Criar um novo usuário 
   async create(data: CreateUserDTO): Promise<User> {
-    return await User.create(data);
+    return await User.create({
+      ...data,
+      role: 'user' // Define o padrão como 'user'
+    } as any);
   }
 
   // Listar todos os usuários
@@ -28,7 +31,7 @@ export class UserRepository {
     return await User.findAll({
       where: {
         name: {
-          [Op.iLike]: `%${name}%`
+          [Op.iLike]: `%${name}%` // iLike é ótimo para Postgres (case insensitive)
         }
       }
     });
@@ -73,7 +76,7 @@ export class UserRepository {
     return user;
   }
 
-  // Verificar se email já existe (excluindo um ID específico - útil para update)
+  // Verificar se email já existe
   async emailExists(email: string, excludeId?: number): Promise<boolean> {
     const whereClause: any = { email };
 

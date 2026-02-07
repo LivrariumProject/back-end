@@ -1,8 +1,6 @@
-//import express from "express";
 import express, { Request, Response } from 'express';
 import dotenv from "dotenv";
 import sequelize from "./config/database";
-import { UserRepository } from './repository/UserRepository';
 import { hashPassword } from "./utils/auth";
 import { User } from './models/User';
 
@@ -22,6 +20,8 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
+// ==================== ROTAS PERSONALIZADAS DO INDEX ====================
+
 // Rota protegida de exemplo
 app.get('/protected', authenticate, (req: Request, res: Response) => {
   res.status(200).json({
@@ -30,7 +30,7 @@ app.get('/protected', authenticate, (req: Request, res: Response) => {
   });
 });
 
-// Rota de registro (aceita role)
+// Rota de registro manual (caso queira manter aqui além do authRoutes)
 app.post("/register", async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
@@ -54,12 +54,15 @@ app.post("/register", async (req: Request, res: Response) => {
   }
 });
 
-// ==================== ROTAS ====================
+// ==================== IMPORTAÇÃO DE ROTAS ====================
 // Rotas públicas (sem autenticação)
 app.use('/auth', authRoutes);
 
 // Rotas protegidas (com autenticação)
-app.use("/books", bookRoutes);
+// OBS: Se bookRoutes tiver rotas públicas (GET), o authenticate aqui bloqueia tudo.
+// O ideal é colocar o authenticate DENTRO do bookRoutes nas rotas específicas de admin.
+// Mas manterei conforme seu código original por enquanto:
+app.use("/books", bookRoutes); 
 app.use("/users", authenticate, userRoutes);
 app.use("/purchases", authenticate, purchaseRoutes);
 app.use("/rentals", authenticate, rentalRoutes);
@@ -67,34 +70,45 @@ app.use("/rentals", authenticate, rentalRoutes);
 // ==================== MIDDLEWARE DE ERRO ====================
 app.use(errorHandler);
 
-// Sincronizar banco e subir servidor
-const PORT = process.env.PORT || 3000;
+// ==================== INICIALIZAÇÃO DO SERVIDOR ====================
 
-sequelize
-  .sync({ force: true })
-  .then(async () => {
-    console.log("✅ Banco de dados conectado!");
-    
-    // Criar admin padrão se não existir
-    const adminEmail = 'admin@livrarium.com';
-    const existingAdmin = await User.findOne({ where: { email: adminEmail } });
-    
-    if (!existingAdmin) {
-      const hashedPassword = await hashPassword('admin123');
-      await User.create({
-        name: 'Administrador',
-        email: adminEmail,
-        password: hashedPassword,
-        role: 'admin'
-      });
-      console.log('👑 Usuário admin criado: admin@livrarium.com / admin123');
-    }
-    
-    app.listen(PORT, () =>
-      console.log(`🚀 Servidor rodando na porta ${PORT}`)
-    );
-  })
-  .catch((error) => {
-    console.error("❌ Erro ao conectar ao banco de dados:", error);
-  });
+// AQUI ESTÁ O AJUSTE IMPORTANTE:
+// Só inicia o servidor se NÃO estiver rodando testes.
+if (process.env.NODE_ENV !== 'test') {
   
+  const PORT = process.env.PORT || 3000;
+
+  sequelize
+    .sync({ force: true }) // CUIDADO: force: true apaga o banco ao reiniciar (bom para dev, perigoso para prod)
+    .then(async () => {
+      console.log("✅ Banco de dados conectado!");
+      
+      // Criar admin padrão se não existir
+      const adminEmail = 'admin@livrarium.com';
+      try {
+        const existingAdmin = await User.findOne({ where: { email: adminEmail } });
+        
+        if (!existingAdmin) {
+          const hashedPassword = await hashPassword('admin123');
+          await User.create({
+            name: 'Administrador',
+            email: adminEmail,
+            password: hashedPassword,
+            role: 'admin'
+          });
+          console.log('👑 Usuário admin criado: admin@livrarium.com / admin123');
+        }
+      } catch (err) {
+        console.error("⚠️ Erro ao verificar/criar admin:", err);
+      }
+      
+      app.listen(PORT, () =>
+        console.log(`🚀 Servidor rodando na porta ${PORT}`)
+      );
+    })
+    .catch((error) => {
+      console.error("❌ Erro ao conectar ao banco de dados:", error);
+    });
+}
+
+export default app;
