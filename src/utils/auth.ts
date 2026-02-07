@@ -22,8 +22,8 @@ export const comparePassword = async (password: string, hashedPassword: string):
 
 // Função para gerar um token JWT
 
-export const generateToken = (userId: number, name: string): string => {
-  return jwt.sign({ id: userId, name }, JWT_SECRET, { expiresIn: '1h' });
+export const generateToken = (userId: number, name: string, role: String): string => {
+  return jwt.sign({ id: userId, name, role }, JWT_SECRET, { expiresIn: '1h' });
 };
 
 // Função para verificar um token JWT

@@ -20,6 +20,13 @@ export class RentalController {
                 rentalDays: req.body.rentalDays
             };
 
+            const authenticatedUserId = (req as any).user?.id;
+            const authenticatedUserRole = (req as any).user?.role;
+
+            if (createData.userId !== authenticatedUserId && authenticatedUserRole !== 'admin') {
+                throw new AppError("Você só pode criar aluguéis para si mesmo.", 403);
+            }
+
             const rental = await this.rentalService.createRental(createData);
 
             res.status(201).json({
@@ -50,7 +57,8 @@ export class RentalController {
     // Buscar aluguel por ID
     getById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -70,10 +78,18 @@ export class RentalController {
     // Buscar aluguéis por usuário
     getByUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const userId = parseInt(req.params.userId, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const userId = parseInt(req.params.userId as string, 10);
 
             if (isNaN(userId)) {
                 throw new AppError("ID do usuário inválido", 400);
+            }
+
+            const authenticatedUserId = (req as any).user?.id;
+            const authenticatedUserRole = (req as any).user?.role;
+
+            if (userId !== authenticatedUserId && authenticatedUserRole !== 'admin') {
+                throw new AppError("Acesso negado. Você só pode ver seus próprios aluguéis.", 403);
             }
 
             const rentals = await this.rentalService.getRentalsByUser(userId);
@@ -91,10 +107,18 @@ export class RentalController {
     // Buscar aluguéis ativos de um usuário
     getActiveByUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const userId = parseInt(req.params.userId, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const userId = parseInt(req.params.userId as string, 10);
 
             if (isNaN(userId)) {
                 throw new AppError("ID do usuário inválido", 400);
+            }
+
+            const authenticatedUserId = (req as any).user?.id;
+            const authenticatedUserRole = (req as any).user?.role;
+
+            if (userId !== authenticatedUserId && authenticatedUserRole !== 'admin') {
+                throw new AppError("Acesso negado. Você só pode ver seus próprios aluguéis ativos.", 403);
             }
 
             const rentals = await this.rentalService.getActiveRentalsByUser(userId);
@@ -112,7 +136,8 @@ export class RentalController {
     // Buscar aluguéis por livro
     getByBook = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const bookId = parseInt(req.params.bookId, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const bookId = parseInt(req.params.bookId as string, 10);
 
             if (isNaN(bookId)) {
                 throw new AppError("ID do livro inválido", 400);
@@ -165,6 +190,7 @@ export class RentalController {
         try {
             const filters: RentalFiltersDTO = {};
 
+            // CORREÇÃO: Mantido/Garantido o 'as string' para todos os filtros
             if (req.query.userId) {
                 filters.userId = parseInt(req.query.userId as string, 10);
             }
@@ -205,7 +231,8 @@ export class RentalController {
     // Devolver livro
     return = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -226,7 +253,8 @@ export class RentalController {
     // Confirmar pagamento
     confirmPayment = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -247,7 +275,8 @@ export class RentalController {
     // Renovar aluguel
     renew = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -274,7 +303,8 @@ export class RentalController {
     // Deletar aluguel
     delete = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);

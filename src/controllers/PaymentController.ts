@@ -51,7 +51,8 @@ export class PaymentController {
     // Buscar pagamento por ID
     getById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -71,7 +72,8 @@ export class PaymentController {
     // Buscar pagamentos por usuário
     getByUserId = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const userId = parseInt(req.params.userId, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const userId = parseInt(req.params.userId as string, 10);
 
             if (isNaN(userId)) {
                 throw new AppError("ID do usuário inválido", 400);
@@ -92,7 +94,8 @@ export class PaymentController {
     // Buscar pagamentos por status
     getByStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const status = req.params.status as PaymentStatus;
+            // CORREÇÃO: Forçando 'as string' antes de converter para o Enum
+            const status = req.params.status as string as PaymentStatus;
 
             if (!["pending", "completed", "failed", "refunded"].includes(status)) {
                 throw new AppError("Status inválido", 400);
@@ -115,20 +118,22 @@ export class PaymentController {
         try {
             const filters: PaymentFiltersDTO = {};
 
+            // CORREÇÃO: Adicionado 'as string' em todos os filtros de query
             if (req.query.userId) {
                 filters.userId = parseInt(req.query.userId as string, 10);
             }
 
             if (req.query.status) {
-                filters.status = req.query.status as PaymentStatus;
+                // Aqui usamos 'as unknown as PaymentStatus' ou 'as string as PaymentStatus'
+                filters.status = req.query.status as string as PaymentStatus;
             }
 
             if (req.query.type) {
-                filters.type = req.query.type as PaymentType;
+                filters.type = req.query.type as string as PaymentType;
             }
 
             if (req.query.paymentMethod) {
-                filters.paymentMethod = req.query.paymentMethod as PaymentMethod;
+                filters.paymentMethod = req.query.paymentMethod as string as PaymentMethod;
             }
 
             if (req.query.startDate) {
@@ -155,7 +160,8 @@ export class PaymentController {
     // Processar pagamento
     process = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
@@ -182,7 +188,8 @@ export class PaymentController {
     // Reembolsar pagamento
     refund = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const id = parseInt(req.params.id, 10);
+            // CORREÇÃO: Adicionado 'as string'
+            const id = parseInt(req.params.id as string, 10);
 
             if (isNaN(id)) {
                 throw new AppError("ID inválido", 400);
