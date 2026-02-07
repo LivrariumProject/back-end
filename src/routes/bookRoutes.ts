@@ -8,24 +8,29 @@ const bookController = new BookController();
 
 // ==================== ROTAS DE LIVROS ====================
 
-// ==================== ROTAS PÚBLICAS ====================
-// Qualquer pessoa pode acessar (sem autenticação)
-router.get("/", bookController.getAll);                          // GET /books - Listar todos
-router.get("/search", bookController.search);                    // GET /books/search?genre=...&author=... - Busca com filtros
-router.get("/available", bookController.getAvailable);           // GET /books/available - Listar disponíveis
-router.get("/isbn/:isbn", bookController.getByIsbn);             // GET /books/isbn/:isbn - Buscar por ISBN
-router.get("/author/:author", bookController.getByAuthor);       // GET /books/author/:author - Buscar por autor
-router.get("/genre/:genre", bookController.getByGenre);          // GET /books/genre/:genre - Buscar por gênero
-router.get("/:id", bookController.getById);                      // GET /books/:id - Buscar por ID
-router.get("/:id/availability", bookController.checkAvailability); // GET /books/:id/availability - Verificar disponibilidade
+// --- 1. ROTAS PÚBLICAS ESTÁTICAS (Devem vir primeiro) ---
+router.get("/", bookController.getAll);                          // GET /books
+router.get("/search", bookController.search);                    // GET /books/search
+router.get("/available", bookController.getAvailable);           // GET /books/available
 
-// ==================== ROTAS PROTEGIDAS (ADMIN APENAS) ====================
-// Apenas admin pode criar, atualizar, deletar
-router.post("/", authenticate, authorize('admin'), bookController.create);                        // POST /books - Criar livro
-router.put("/:id", authenticate, authorize('admin'), bookController.update);                      // PUT /books/:id - Atualizar livro
-router.patch("/:id/available", authenticate, authorize('admin'), bookController.markAvailable);   // PATCH /books/:id/available - Marcar como disponível
-router.patch("/:id/unavailable", authenticate, authorize('admin'), bookController.markUnavailable); // PATCH /books/:id/unavailable - Marcar como indisponível
-router.delete("/:id", authenticate, authorize('admin'), bookController.delete);                   // DELETE /books/:id - Deletar livro
-router.get("/stats", authenticate, authorize('admin'), bookController.getStats);                 // GET /books/stats - Estatísticas
+// --- 2. ROTAS ESPECÍFICAS/ADMIN (Devem vir antes de /:id) ---
+// MOVIDO PARA CÁ: Stats é uma palavra fixa, se ficar depois do :id, o express confunde.
+router.get("/stats", authenticate, authorize('admin'), bookController.getStats); // GET /books/stats
+
+// --- 3. ROTAS PARAMETRIZADAS (ISBN, Autor, Gênero) ---
+router.get("/isbn/:isbn", bookController.getByIsbn);             // GET /books/isbn/:isbn
+router.get("/author/:author", bookController.getByAuthor);       // GET /books/author/:author
+router.get("/genre/:genre", bookController.getByGenre);          // GET /books/genre/:genre
+
+// --- 4. ROTAS DE ID (Genéricas - Devem ser as últimas dos GETs) ---
+router.get("/:id", bookController.getById);                      // GET /books/:id
+router.get("/:id/availability", bookController.checkAvailability); // GET /books/:id/availability
+
+// ==================== ROTAS PROTEGIDAS (AÇÕES DE ESCRITA) ====================
+router.post("/", authenticate, authorize('admin'), bookController.create);                        // POST /books
+router.put("/:id", authenticate, authorize('admin'), bookController.update);                      // PUT /books/:id
+router.patch("/:id/available", authenticate, authorize('admin'), bookController.markAvailable);   // PATCH /books/:id/available
+router.patch("/:id/unavailable", authenticate, authorize('admin'), bookController.markUnavailable); // PATCH /books/:id/unavailable
+router.delete("/:id", authenticate, authorize('admin'), bookController.delete);                   // DELETE /books/:id
 
 export default router;
