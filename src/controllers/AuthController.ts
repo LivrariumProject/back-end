@@ -27,13 +27,14 @@ export const login = async (req: Request, res: Response) => {
     // Gera um token JWT
     const token = generateToken(user.id, user.name, user.role);
 
-    res.status(200).json({ 
-      message: 'Login successful', 
+    res.status(200).json({
+      message: 'Login successful',
       token,
       user: {
         id: user.id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        role: user.role
       }
     });
   } catch (err) {

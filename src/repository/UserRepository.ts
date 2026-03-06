@@ -4,8 +4,8 @@ import { CreateUserDTO, UpdateUserDTO, UserFiltersDTO } from "../dtos/UserDTO";
 
 export class UserRepository {
   // Criar um novo usuário
-  async create(data: CreateUserDTO): Promise<User> {
-    return await User.create(data);
+  async create(data: CreateUserDTO) {
+    return await User.create({ ...data, role: 'user' });
   }
 
   // Listar todos os usuários
