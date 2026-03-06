@@ -33,7 +33,8 @@ export const login = async (req: Request, res: Response) => {
       user: {
         id: user.id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        role: user.role
       }
     });
   } catch (err) {

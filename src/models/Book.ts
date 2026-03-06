@@ -74,7 +74,7 @@ Book.init(
         },
         available: {
             type: DataTypes.BOOLEAN,
-            defaultValue: true,
+            defaultValue: false,
             allowNull: false
         },
         description: {
