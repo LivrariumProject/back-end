@@ -15,10 +15,22 @@ import authRoutes from './routes/authRoutes';
 import { errorHandler } from "./middlewares/errorHandler";
 import { authenticate } from './middlewares/authMiddleware';
 
+import cors from 'cors';
+
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+
+app.options(/.*/, cors());
 
 // ==================== ROTAS PERSONALIZADAS DO INDEX ====================
 

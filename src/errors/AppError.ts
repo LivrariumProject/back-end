@@ -103,6 +103,25 @@ export class InvalidPaymentMethodError extends AppError {
     }
 }
 
+// ==================== ERROS DE PAGAMENTO ====================
+export class PaymentNotFoundError extends AppError {
+    constructor(id?: number) {
+    super(id ? `Pagamento com ID ${id} não encontrado` : "Pagamento não encontrado", 404);
+    }
+}
+
+export class PaymentAlreadyProcessedError extends AppError {
+    constructor(id: number) {
+    super(`O pagamento com ID ${id} já foi processado`, 400);
+    }
+}
+
+export class InvalidPaymentDataError extends AppError {
+    constructor(message: string) {
+    super(message, 400);
+    }
+}
+
 // ==================== ERROS DE ALUGUEL ====================
 
 export class RentalNotFoundError extends AppError {

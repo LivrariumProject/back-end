@@ -11,8 +11,7 @@ export interface UserAttributes {
 }
 
 // 2. Atributos necessários para criar (id é auto incremento)
-export interface UserCreationAttributes
-  extends Optional<UserAttributes, "id"> {}
+export interface UserCreationAttributes extends Optional<UserAttributes, "id" | "role"> {}
 
 // 3. Classe do modelo
 export class User
